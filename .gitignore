@@ -75,3 +75,4 @@ next-env.d.ts
 Thumbs.db
 .vscode/
 .idea/
+backend/postgres_old_data.json
