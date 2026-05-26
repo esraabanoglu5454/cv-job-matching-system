@@ -47,7 +47,7 @@ useEffect(() => {
   company_name: companyName,
   description,
   location,
-  employment_type: employmentType || "Tam zamanlı",
+  employment_type: employmentType || "Tam Zamanlı",
   salary_range: salaryRange,
 });
 
@@ -164,8 +164,8 @@ useEffect(() => {
   className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-cyan-400"
 >
   <option value="">Çalışma türü seçin</option>
-  <option value="Tam zamanlı">Tam Zamanlı</option>
-  <option value="Yarı zamanlı">Yarı Zamanlı</option>
+  <option value="Tam Zamanlı">Tam Zamanlı</option>
+  <option value="Yarı Zamanlı">Yarı Zamanlı</option>
   <option value="Hibrit">Hibrit</option>
   <option value="Uzaktan">Uzaktan</option>
   <option value="Staj">Staj</option>
