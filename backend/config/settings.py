@@ -166,10 +166,6 @@ FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 LOGIN_REDIRECT_URL = "/api/auth/social/redirect/"
 ACCOUNT_LOGOUT_REDIRECT_URL = FRONTEND_URL
 
-LOGIN_REDIRECT_URL = os.getenv(
-    "LOGIN_REDIRECT_URL",
-    "http://127.0.0.1:8000/api/auth/social/redirect/"
-)
 
 LOGOUT_REDIRECT_URL = FRONTEND_URL
 
@@ -236,7 +232,7 @@ ACCOUNT_SIGNUP_FIELDS = ["email*"]
 ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_LOGIN_METHODS = {"email"}
-
+SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 
 # Google ile gelen e-posta mevcut kullanıcıyla aynıysa bağlamaya izin ver
 SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
