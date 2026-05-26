@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 import os
+import dj_database_url
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -24,12 +25,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 
-SECRET_KEY = 'django-insecure-*s0f%%&-bnhn7th)_*-(3^bbdjj1gqbif^=#9936n-q0*y--%2'
+# SECRET_KEY = 'django-insecure-*s0f%%&-bnhn7th)_*-(3^bbdjj1gqbif^=#9936n-q0*y--%2'
 
 
-DEBUG = True
+# DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+
+SECRET_KEY = os.getenv(
+    "SECRET_KEY",
+    "django-insecure-local-development-key"
+)
+
+DEBUG = os.getenv("DEBUG", "True") == "True"
+
+ALLOWED_HOSTS = os.getenv(
+    "ALLOWED_HOSTS",
+    "127.0.0.1,localhost"
+).split(",")
 
 
 INSTALLED_APPS = [
@@ -64,6 +77,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -96,16 +110,35 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'cv_match_db'),
-        'USER': os.getenv('DB_USER', 'postgres'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': os.getenv('DB_PORT', '5432'),
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL:
+    DATABASES = {
+        "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('DB_NAME', 'cv_match_db'),
+            'USER': os.getenv('DB_USER', 'postgres'),
+            'PASSWORD': os.getenv('DB_PASSWORD'),
+            'HOST': os.getenv('DB_HOST', 'localhost'),
+            'PORT': os.getenv('DB_PORT', '5432'),
+        }
+    }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.getenv('DB_NAME', 'cv_match_db'),
+#         'USER': os.getenv('DB_USER', 'postgres'),
+#         'PASSWORD': os.getenv('DB_PASSWORD'),
+#         'HOST': os.getenv('DB_HOST', 'localhost'),
+#         'PORT': os.getenv('DB_PORT', '5432'),
+#     }
+# }
 
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
@@ -129,8 +162,17 @@ AUTHENTICATION_BACKENDS = [
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
-LOGIN_REDIRECT_URL = "http://localhost:3000/dashboard"
-LOGOUT_REDIRECT_URL = "http://localhost:3000/"
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+
+LOGIN_REDIRECT_URL = os.getenv(
+    "LOGIN_REDIRECT_URL",
+    "http://127.0.0.1:8000/api/auth/social/redirect/"
+)
+
+LOGOUT_REDIRECT_URL = FRONTEND_URL
+
+# LOGIN_REDIRECT_URL = "http://localhost:3000/dashboard"
+# LOGOUT_REDIRECT_URL = "http://localhost:3000/"
 
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
@@ -145,6 +187,8 @@ SITE_ID = 1
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 from datetime import timedelta
 
 SIMPLE_JWT = {
@@ -159,11 +203,21 @@ REST_FRAMEWORK = {
 }
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
+
+CORS_ALLOWED_ORIGINS = os.getenv(
+    "CORS_ALLOWED_ORIGINS",
+    "http://localhost:3000,http://127.0.0.1:3000"
+).split(",")
+
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    "CSRF_TRUSTED_ORIGINS",
+    "http://localhost:3000,http://127.0.0.1:3000"
+).split(",")
+# ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+#     "http://127.0.0.1:3000",
+# ]
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -173,7 +227,7 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_SIGNUP_FIELDS = ["email*"]
 
-LOGIN_REDIRECT_URL = "http://127.0.0.1:8000/api/auth/social/redirect/"
+# LOGIN_REDIRECT_URL = "http://127.0.0.1:8000/api/auth/social/redirect/"
 
 
 # Allauth ayarları
