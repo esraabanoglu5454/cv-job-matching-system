@@ -222,8 +222,8 @@ CORS_ALLOW_CREDENTIALS = True
 
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
-ACCOUNT_LOGIN_METHODS = {"email"}
-ACCOUNT_SIGNUP_FIELDS = ["email*"]
+ACCOUNT_LOGIN_METHODS = {"username"}
+ACCOUNT_SIGNUP_FIELDS = ["username"]
 
 # LOGIN_REDIRECT_URL = "http://127.0.0.1:8000/api/auth/social/redirect/"
 
@@ -231,7 +231,6 @@ ACCOUNT_SIGNUP_FIELDS = ["email*"]
 # Allauth ayarları
 ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_LOGIN_METHODS = {"email"}
 SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 
 # Google ile gelen e-posta mevcut kullanıcıyla aynıysa bağlamaya izin ver
