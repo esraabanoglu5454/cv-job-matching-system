@@ -12,7 +12,7 @@ from django.shortcuts import redirect
 from django.views import View
 from urllib.parse import urlencode
 from django.contrib.auth import authenticate, get_user_model
-
+from django.conf import settings
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -203,7 +203,9 @@ class DeleteAccountView(APIView):
 class SocialLoginRedirectView(View):
     def get(self, request):
         if not request.user.is_authenticated:
-            return redirect("http://localhost:3000/login?social_error=not_authenticated")
+            frontend_url = getattr(settings, "FRONTEND_URL", "http://localhost:3000")
+            return redirect(f"{frontend_url}/login?social_error=not_authenticated")
+            # return redirect("http://localhost:3000/login?social_error=not_authenticated")
 
         user = request.user
 
@@ -218,5 +220,7 @@ class SocialLoginRedirectView(View):
             "refresh": str(refresh),
             "user_type": user_type,
         })
+        frontend_url = getattr(settings, "FRONTEND_URL", "http://localhost:3000")
+        return redirect(f"{frontend_url}/social-login?{query}")
 
-        return redirect(f"http://localhost:3000/social-login?{query}")
+        # return redirect(f"http://localhost:3000/social-login?{query}")
