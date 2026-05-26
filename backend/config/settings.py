@@ -267,3 +267,10 @@ SOCIALACCOUNT_PROVIDERS = {
     },
 }
 
+# Railway / proxy arkasında HTTPS algılama
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
+
+# Django-allauth callback URL'lerini https üretmesi için
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
+
