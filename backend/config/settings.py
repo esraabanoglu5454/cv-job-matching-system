@@ -256,7 +256,6 @@ SOCIALACCOUNT_PROVIDERS = {
         },
         "FIELDS": [
             "id",
-            "email",
             "name",
             "first_name",
             "last_name",
