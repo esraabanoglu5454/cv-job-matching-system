@@ -290,6 +290,9 @@ const clearAuthStorage = () => {
   localStorage.removeItem("user_type");
 };
 
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
+
 
 const handleGoogleLogin = () => {
   const nextPath = selectedJobForGuestApply?.id
@@ -300,8 +303,9 @@ const handleGoogleLogin = () => {
 
   localStorage.setItem("social_login_next", nextPath);
   localStorage.setItem("social_login_role", "candidate");
+  window.location.href = `${API_BASE_URL}/accounts/google/login/`;
 
-  window.location.href = "http://127.0.0.1:8000/accounts/google/login/";
+  // window.location.href = "http://127.0.0.1:8000/accounts/google/login/";
 };
 
 const handleFacebookLogin = () => {
@@ -313,8 +317,9 @@ const handleFacebookLogin = () => {
 
   localStorage.setItem("social_login_next", nextPath);
   localStorage.setItem("social_login_role", "candidate");
+  window.location.href = `${API_BASE_URL}/accounts/facebook/login/`;
 
-  window.location.href = "http://127.0.0.1:8000/accounts/facebook/login/";
+  // window.location.href = "http://127.0.0.1:8000/accounts/facebook/login/";
 };
 
 

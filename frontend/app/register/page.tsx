@@ -166,21 +166,25 @@ function RegisterContent() {
       setLoading(false);
     }
   };
+  const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
 
   const handleGoogleRegister = () => {
   const selectedRole = role || "candidate";
 
   localStorage.setItem("social_login_role", selectedRole);
+  window.location.href = `${API_BASE_URL}/accounts/google/login/`;
 
-  window.location.href = "http://127.0.0.1:8000/accounts/google/login/";
+  // window.location.href = "http://127.0.0.1:8000/accounts/google/login/";
 };
 
 const handleFacebookRegister = () => {
   const selectedRole = role || "candidate";
 
   localStorage.setItem("social_login_role", selectedRole);
+  window.location.href = `${API_BASE_URL}/accounts/facebook/login/`;
 
-  window.location.href = "http://127.0.0.1:8000/accounts/facebook/login/";
+  // window.location.href = "http://127.0.0.1:8000/accounts/facebook/login/";
 };
 
   return (
