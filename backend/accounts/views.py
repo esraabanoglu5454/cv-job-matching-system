@@ -202,8 +202,8 @@ class DeleteAccountView(APIView):
 
 class SocialLoginRedirectView(View):
     def get(self, request):
+        frontend_url = getattr(settings, "FRONTEND_URL", "http://localhost:3000")
         if not request.user.is_authenticated:
-            frontend_url = getattr(settings, "FRONTEND_URL", "http://localhost:3000")
             return redirect(f"{frontend_url}/login?social_error=not_authenticated")
             # return redirect("http://localhost:3000/login?social_error=not_authenticated")
 
