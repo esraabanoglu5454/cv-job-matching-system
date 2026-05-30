@@ -61,7 +61,9 @@ useEffect(() => {
   const token =
     localStorage.getItem("access") || localStorage.getItem("access_token");
 
-  const userType = localStorage.getItem("user_type");
+  const userType = (localStorage.getItem("user_type") || "")
+    .trim()
+    .toLowerCase();
 
   if (!token) {
     setIsLoggedIn(false);
@@ -69,14 +71,8 @@ useEffect(() => {
     return;
   }
 
-  if (userType !== "candidate") {
-    setIsLoggedIn(false);
-    setCurrentUserType(userType);
-    return;
-  }
-
   setIsLoggedIn(true);
-  setCurrentUserType(userType);
+  setCurrentUserType(userType || null);
 }, []);
 
   const normalize = (value?: string) =>
@@ -277,6 +273,10 @@ const handleApply = (job: Job) => {
   const token =
     localStorage.getItem("access") || localStorage.getItem("access_token");
 
+  const userType = (localStorage.getItem("user_type") || "")
+    .trim()
+    .toLowerCase();
+
   if (!token) {
     setSelectedJobForGuestApply(job);
     setShowGuestApplyCard(true);
@@ -288,6 +288,13 @@ const handleApply = (job: Job) => {
       });
     }, 100);
 
+    return;
+  }
+
+  if (userType === "employer") {
+    alert(
+      "İşveren hesabıyla başvuru yapılamaz. Başvuru yapmak için aday hesabıyla giriş yapmalısınız."
+    );
     return;
   }
 
@@ -749,87 +756,116 @@ const handleFacebookLogin = () => {
                 );
               })}
           </section>
-              <aside className="lg:sticky lg:top-28 h-fit">
-{isLoggedIn ? (
-  <>
-    <h3 className="text-xl font-bold text-slate-950">
-      Başvuruya hazırsın
-    </h3>
+        <aside className="lg:sticky lg:top-28 h-fit">
+  {isLoggedIn && currentUserType === "candidate" ? (
+    <>
+      <h3 className="text-xl font-bold text-slate-950">
+        Başvuruya hazırsın
+      </h3>
 
-    <p className="mt-2 text-sm leading-6 text-slate-500">
-      Aday hesabıyla giriş yaptın. İlanlara başvurmak için ilgili ilanın
-      Başvur butonuna basabilirsin.
-    </p>
+      <p className="mt-2 text-sm leading-6 text-slate-500">
+        Aday hesabıyla giriş yaptın. İlanlara başvurmak için ilgili ilanın
+        Başvur butonuna basabilirsin.
+      </p>
 
-    <button
-      type="button"
-      onClick={() => router.push("/matching")}
-      className="mt-5 w-full rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-3 text-sm font-bold text-white shadow-[0_10px_24px_rgba(14,165,233,0.20)] transition hover:scale-[1.01]"
-    >
-      Eşleştirme Sayfasına Git
-    </button>
-  </>
-) : (
-  <>
-    <h3 className="text-xl font-bold text-slate-950">
-      Hemen ilanlara başvur!
-    </h3>
-
-    <p className="mt-2 text-sm leading-6 text-slate-500">
-      İş ilanlarını inceleyebilir ve detaylarını görebilirsiniz. Başvuru
-      yapmak için aday hesabıyla giriş yapmanız veya yeni hesap oluşturmanız
-      gerekir.
-    </p>
-
-    <div className="mt-5 space-y-3">
       <button
         type="button"
-        onClick={() => router.push("/register?role=candidate")}
-        className="w-full rounded-2xl border border-cyan-300 bg-white px-4 py-3 text-sm font-bold text-cyan-700 transition hover:bg-cyan-50"
+        onClick={() => router.push("/matching")}
+        className="mt-5 w-full rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-3 text-sm font-bold text-white shadow-[0_10px_24px_rgba(14,165,233,0.20)] transition hover:scale-[1.01]"
       >
-        Üye Ol
+        Eşleştirme Sayfasına Git
       </button>
+    </>
+  ) : isLoggedIn && currentUserType === "employer" ? (
+    <>
+      <h3 className="text-xl font-bold text-slate-950">
+        İşveren hesabıyla giriş yaptınız
+      </h3>
 
-      <button
-        type="button"
-        onClick={() => router.push("/login?role=candidate")}
-        className="w-full rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-3 text-sm font-bold text-white shadow-[0_10px_24px_rgba(14,165,233,0.20)] transition hover:scale-[1.01]"
-      >
-        Giriş Yap
-      </button>
-    </div>
+      <p className="mt-2 text-sm leading-6 text-slate-500">
+        Bu sayfada yayınlanan ilanları inceleyebilirsiniz. İlan oluşturmak
+        veya gelen başvuruları yönetmek için işveren panelini kullanabilirsiniz.
+      </p>
 
-    <div className="my-4 flex items-center gap-3">
-      <div className="h-px flex-1 bg-slate-200" />
-      <span className="text-xs text-slate-400">
-        veya sosyal hesap ile devam et
-      </span>
-      <div className="h-px flex-1 bg-slate-200" />
-    </div>
+      <div className="mt-5 space-y-3">
+        <button
+          type="button"
+          onClick={() => router.push("/jobs")}
+          className="w-full rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-3 text-sm font-bold text-white shadow-[0_10px_24px_rgba(14,165,233,0.20)] transition hover:scale-[1.01]"
+        >
+          İlan Yönetimine Git
+        </button>
 
-    <div className="grid grid-cols-2 gap-3">
-      <button
-        type="button"
-        onClick={handleGoogleLogin}
-        className="flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-cyan-200 hover:bg-slate-50"
-      >
-        <FcGoogle className="h-5 w-5" />
-        Google
-      </button>
+        <button
+          type="button"
+          onClick={() => router.push("/profile/applications")}
+          className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+        >
+          Başvuruları Gör
+        </button>
+      </div>
+    </>
+  ) : (
+    <>
+      <h3 className="text-xl font-bold text-slate-950">
+        Hemen ilanlara başvur!
+      </h3>
 
-      <button
-        type="button"
-        onClick={handleFacebookLogin}
-        className="flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-cyan-200 hover:bg-slate-50"
-      >
-        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-600">
-          <FaFacebookF className="h-3 w-3 text-white" />
+      <p className="mt-2 text-sm leading-6 text-slate-500">
+        İş ilanlarını inceleyebilir ve detaylarını görebilirsiniz. Başvuru
+        yapmak için aday hesabıyla giriş yapmanız veya yeni hesap oluşturmanız
+        gerekir.
+      </p>
+
+      <div className="mt-5 space-y-3">
+        <button
+          type="button"
+          onClick={() => router.push("/register?role=candidate")}
+          className="w-full rounded-2xl border border-cyan-300 bg-white px-4 py-3 text-sm font-bold text-cyan-700 transition hover:bg-cyan-50"
+        >
+          Üye Ol
+        </button>
+
+        <button
+          type="button"
+          onClick={() => router.push("/login?role=candidate")}
+          className="w-full rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-3 text-sm font-bold text-white shadow-[0_10px_24px_rgba(14,165,233,0.20)] transition hover:scale-[1.01]"
+        >
+          Giriş Yap
+        </button>
+      </div>
+
+      <div className="my-4 flex items-center gap-3">
+        <div className="h-px flex-1 bg-slate-200" />
+        <span className="text-xs text-slate-400">
+          veya sosyal hesap ile devam et
         </span>
-        Facebook
-      </button>
-    </div>
-  </>
-)}
+        <div className="h-px flex-1 bg-slate-200" />
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <button
+          type="button"
+          onClick={handleGoogleLogin}
+          className="flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-cyan-200 hover:bg-slate-50"
+        >
+          <FcGoogle className="h-5 w-5" />
+          Google
+        </button>
+
+        <button
+          type="button"
+          onClick={handleFacebookLogin}
+          className="flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-cyan-200 hover:bg-slate-50"
+        >
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-600">
+            <FaFacebookF className="h-3 w-3 text-white" />
+          </span>
+          Facebook
+        </button>
+      </div>
+    </>
+  )}
 </aside>
         </section>
       </main>
