@@ -57,13 +57,25 @@ export default function JobListPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUserType, setCurrentUserType] = useState<string | null>(null);
 
-  useEffect(() => {
+useEffect(() => {
   const token =
     localStorage.getItem("access") || localStorage.getItem("access_token");
 
   const userType = localStorage.getItem("user_type");
 
-  setIsLoggedIn(Boolean(token));
+  if (!token) {
+    setIsLoggedIn(false);
+    setCurrentUserType(null);
+    return;
+  }
+
+  if (userType !== "candidate") {
+    setIsLoggedIn(false);
+    setCurrentUserType(userType);
+    return;
+  }
+
+  setIsLoggedIn(true);
   setCurrentUserType(userType);
 }, []);
 
@@ -288,7 +300,13 @@ const clearAuthStorage = () => {
   localStorage.removeItem("access_token");
   localStorage.removeItem("refresh_token");
   localStorage.removeItem("user_type");
-};
+  localStorage.removeItem("user_id");
+  localStorage.removeItem("username");
+  localStorage.removeItem("company_name");
+  localStorage.removeItem("remembered_username");
+  localStorage.removeItem("social_login_next");
+  localStorage.removeItem("social_login_role");
+  };
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
