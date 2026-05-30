@@ -172,6 +172,7 @@ class MyApplicationsView(ListAPIView):
 
 
 class WithdrawApplicationView(APIView):
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, application_id):

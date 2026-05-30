@@ -84,7 +84,7 @@ const withdrawnCount = applications.filter(
   (application) => application.status === "withdrawn"
 ).length;
 
-  const handleWithdrawApplication = async (applicationId: number) => {
+const handleWithdrawApplication = async (applicationId: number) => {
   const confirmWithdraw = window.confirm(
     "Bu başvuruyu geri çekmek istediğinize emin misiniz?"
   );
@@ -92,9 +92,7 @@ const withdrawnCount = applications.filter(
   if (!confirmWithdraw) return;
 
   try {
-    await api.patch(`/applications/status/${applicationId}/`, {
-      status: "reviewed",
-    });
+    await api.patch(`/applications/withdraw/${applicationId}/`);
 
     setApplications((prev) =>
       prev.map((application) =>
@@ -103,6 +101,8 @@ const withdrawnCount = applications.filter(
           : application
       )
     );
+
+    alert("Başvuru başarıyla geri çekildi.");
   } catch (error: any) {
     console.error("Başvuru geri çekilemedi:", error);
     alert(
